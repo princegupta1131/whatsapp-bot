@@ -1,5 +1,4 @@
 # Sunbird VA  Whatsapp
-
 This Node.js project demonstrates WhatsApp integration for three bots: Parent Sakhi,Teacher Sakhi, and Story bot.
 
 ## Table of Contents
