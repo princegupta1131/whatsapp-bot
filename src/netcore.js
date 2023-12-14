@@ -2,9 +2,7 @@ const { app } = require("./app");
 const express = require("express");
 const axios = require("axios");
 const fs = require('fs');
-const botFile = fs.readFileSync('bots.json', 'utf-8');
-const footerFile = fs.readFileSync('footer.json', 'utf-8');
-
+const botFile = fs.readFileSync('assets/bots.json', 'utf-8');
 
 // Read JSON file
 const WHATSAPP_TOKEN = process.env.WHATSAPP_TOKEN;
@@ -14,8 +12,6 @@ const WHATSAPP_PHONEID = process.env.WHATSAPP_PHONEID;
 const CHAR_LIMIT = process.env.CHAR_LIMIT;
 
 const bots = JSON.parse(botFile);
-const footer = JSON.parse(footerFile);
-
 
 const sendMessage = (req, res) => {
     console.log(req.body);
@@ -134,13 +130,42 @@ const webhook = async (req, res) => {
         let botResponse = await getBotMessage(msg, userSelection);
         console.log("webhook => botResponse", botResponse?.answer.trim(100));
         let ansStr = botResponse?.answer.substring(0, `${CHAR_LIMIT}`)
+        //console.log('-------', ansStr)
         axios({
             "method": "post",
             "url": `https://waapi.pepipost.com/api/v2/message/`,
             "data": {
+                // "messaging_product": "whatsapp",
+                // "to": WHATSAPP_TO,
+
+                // "text": {
+                //     "body": ansStr,
+                // },
+                // "type": 'interactive', // Move 'type' to the 'text' property
+                // "interactive": {
+                //     "type": "button",
+                //     "header": {
+                //         "type": "text",
+                //         "text": "DJP"
+                //     },
+                //     "body": {
+                //         "text": `${ansStr}`
+                //     },
+                //     "action": {
+                //         "buttons": [
+                //             {
+                //                 "type": "reply",
+                //                 "reply": {
+                //                     "id": "end",
+                //                     "title": "Start Again"
+                //                 }
+                //             }
+                //         ]
+                //     }
+                // },
                 "message": [
                     {
-                        "recipient_whatsapp": WHATSAPP_TO,
+                        "recipient_whatsapp": 917760236546,
                         "message_type": "interactive",
                         "recipient_type": "individual",
                         "source": "e4aba266d56a3726c36a2053d70c989d",

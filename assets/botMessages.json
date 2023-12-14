@@ -15,7 +15,7 @@
             "type": "button",
             "header": {
                 "type": "text",
-                "text": "Welcome to e-JaaduiPitara"
+                "text": "e-JaaduiPitara"
             },
             "body": {
                 "text": "I am here to help you with amazing stories and activities that you can engage your children with! \n\n What do you want? "
@@ -48,9 +48,43 @@
         }
     },
     "lang-selection": {
-
+        "messaging_product": "whatsapp",
+        "type": "interactive",
+        "interactive": {
+            "type": "button",
+            "header": {
+                "type": "text",
+                "text": "Welcome to e-JaaduiPitaraa"
+            },
+            "body": {
+                "text": "Namaste 🙏 \n\nSelect Language"
+            },
+            "action": {
+                "buttons": [
+                    {
+                        "type": "reply",
+                        "reply": {
+                            "id": "lang-1",
+                            "title": "English"
+                        }
+                    },
+                    {
+                        "type": "reply",
+                        "reply": {
+                            "id": "lang-2",
+                            "title": "Hindi"
+                        }
+                    },
+                    {
+                        "type": "reply",
+                        "reply": {
+                            "id": "lang-3",
+                            "title": "Kannada"
+                        }
+                    }
+                ]
+            }
+        }
     },
-    "footer-message": {
-
-    }
+    "footer-message": {}
 }
