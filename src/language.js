@@ -11,12 +11,15 @@ const init = () => {
           if(dot.length == 2) {
             let lang = dot[0];
             fs.readFile(file, function(err, data) {
-              langString =  JSON.parse(data.toString());
-              language_dict[lang] = langString;
+              language_dict[lang] = JSON.parse(data.toString());
             });
           }
         }
       });
 }
 
-module.exports = {init, language_dict}
+const getLangSelection = () => {
+  return language_dict['en']['lang_selection']
+}
+
+module.exports = {init, language_dict, getLangSelection}

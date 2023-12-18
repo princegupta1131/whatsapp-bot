@@ -215,4 +215,9 @@ const getBotMessage = async (msg, userSelection) => {
     }
 }
 
-module.exports = { sendMessage, webhook }
+// For Health check
+const test = (req, res) => {
+    res.status(200).send('Netcore service API testing..');
+};
+
+module.exports = { sendMessage, webhook, test }
