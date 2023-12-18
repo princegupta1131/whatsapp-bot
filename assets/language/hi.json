@@ -25,21 +25,21 @@
                     {
                         "type": "reply",
                         "reply": {
-                            "id": "bot_1",
+                            "id": "bot__bot_1",
                             "title": "कहानी"
                         }
                     },
                     {
                         "type": "reply",
                         "reply": {
-                            "id": "bot_2",
+                            "id": "bot__bot_2",
                             "title": "शिक्षक गतिविधियाँ"
                         }
                     },
                     {
                         "type": "reply",
                         "reply": {
-                            "id": "bot_3",
+                            "id": "bot__bot_3",
                             "title": "जनक गतिविधियाँ"
                         }
                     }

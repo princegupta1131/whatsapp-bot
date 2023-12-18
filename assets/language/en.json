@@ -25,21 +25,21 @@
                     {
                         "type": "reply",
                         "reply": {
-                            "id": "bot_1",
+                            "id": "bot__bot_1",
                             "title": "A Story"
                         }
                     },
                     {
                         "type": "reply",
                         "reply": {
-                            "id": "bot_2",
+                            "id": "bot__bot_2",
                             "title": "Teacher Activities"
                         }
                     },
                     {
                         "type": "reply",
                         "reply": {
-                            "id": "bot_3",
+                            "id": "bot__bot_3",
                             "title": "Parent Activities"
                         }
                     }
@@ -64,22 +64,22 @@
                     {
                         "type": "reply",
                         "reply": {
-                            "id": "lan_en",
+                            "id": "lang__en",
                             "title": "English"
                         }
                     },
                     {
                         "type": "reply",
                         "reply": {
-                            "id": "lan_hi",
-                            "title": "Hindi"
+                            "id": "lang__hi",
+                            "title": "हिंदी"
                         }
                     },
                     {
                         "type": "reply",
                         "reply": {
-                            "id": "lan_ka",
-                            "title": "Kannada"
+                            "id": "lang__ka",
+                            "title": "ಕನ್ನಡ"
                         }
                     }
                 ]
