@@ -76,7 +76,7 @@ const setMessageTo = (body, incomingMsg) => {
 }
 
 const webhook = async (req, res) => {
-    console.log("webhook: ", req.body);
+    // console.log("webhook: ", req.body);
     let incomingMsg, msg, toMobile;
     incomingMsg = req.body?.incoming_message;
     
@@ -174,69 +174,5 @@ const testWebhook = (req, res) => {
     
      res.send(result);
   };
-
-
-  const postmanCode = () => {
-    let data = JSON.stringify({
-        "message": [
-          {
-            "recipient_whatsapp": "919964300623",
-            "recipient_type": "individual",
-            "message_type": "interactive",
-            "x-apiheader": "custom_data",
-            "source": "e4aba266d56a3726c36a2053d70c989d",
-            "type_interactive": [
-              {
-                "type": "button",
-                "header": {
-                  "type": "text",
-                  "text": "Welcome to e-JaadhuPitaraa"
-                },
-                "body": "Namaste 🙏  \n\nSelect language",
-                "action": [
-                  {
-                    "buttons": [
-                      {
-                        "type": "reply",
-                        "reply": {
-                          "id": "lang__en",
-                          "title": "English"
-                        }
-                      },
-                      {
-                        "type": "reply",
-                        "reply": {
-                          "id": "lang__hi",
-                          "title": "हिंदी"
-                        }
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      });
-      
-      let config = {
-        method: 'post',
-        maxBodyLength: Infinity,
-        url: 'https://cpaaswa.netcorecloud.net/api/v2/message/nc',
-        headers: { 
-          'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJuZXRjb3Jlc2FsZXNleHAiLCJleHAiOjI0MjUxMDI1MjZ9.ljC4Tvgz031i6DsKr2ILgCJsc9C_hxdo2Kw8iZp9tsVcCaKbIOXaFoXmpU7Yo7ob4P6fBtNtdNBQv_NSMq_Q8w', 
-          'Content-Type': 'application/json'
-        },
-        data : data
-      };
-      
-      axios.request(config)
-      .then((response) => {
-        console.log(JSON.stringify(response.data));
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
 
   module.exports = { sendMessage, webhook, test, testWebhook }
