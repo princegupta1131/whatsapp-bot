@@ -9,7 +9,7 @@ const session = require("./session");
 const WHATSAPP_TOKEN = process.env.WHATSAPP_TOKEN;
 const WHATSAPP_VERSION = process.env.WHATSAPP_VERSION;
 const WHATSAPP_PHONEID = process.env.WHATSAPP_PHONEID;
-var WHATSAPP_TO = "919964300623";
+var WHATSAPP_TO = process.env.WHATSAPP_TO;
 
 let isLangSelection, isBotSelection;
 

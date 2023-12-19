@@ -4,7 +4,6 @@ const body_parser = require("body-parser");
 const session = require('./session');  // Import session module
 const language = require("./language");
 const service = require("./service");
-const netcore = require("./netcore");
 const netcoreRoutes = require("./netcore/routes");
 const app = express() // creates express http server
 
