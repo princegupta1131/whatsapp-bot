@@ -4,61 +4,71 @@ const fs = require('fs');
 const language = require("../language");
 const session = require("../session");
 const botFile = fs.readFileSync('assets/bots.json', 'utf-8');
-// const footerFile = fs.readFileSync('assets/footer.json', 'utf-8');
 
-
-// Read JSON file
-const WHATSAPP_TOKEN = process.env.WHATSAPP_TOKEN;
-var WHATSAPP_TO = process.env.WHATSAPP_TO;
-const WHATSAPP_VERSION = process.env.WHATSAPP_VERSION;
-const WHATSAPP_PHONEID = process.env.WHATSAPP_PHONEID;
-const CHAR_LIMIT = process.env.CHAR_LIMIT;
 const NETCORE_TOKEN = process.env.NETCORE_TOKEN;
 
+// Read JSON file
 const bots = JSON.parse(botFile);
 // const footer = JSON.parse(footerFile);
 
 var isLangSelection, isBotSelection;
 
-const sendMessage = async (req, res, body) => {
+const sendMessage = async (body, incomingMsg) => {
     // console.log("SendMessage: ", body);
 
     // For Text convesations
-    let hostUrl = "https://cpaaswa.netcorecloud.net/api/v2/message/nc";
+    let hostUrl = 'https://cpaaswa.netcorecloud.net/api/v2/message/nc';
     
-    // For Interactive message conversations
-    // if(body?.type.toString().toLowerCase() != "text") {
-    //     hostUrl = "https://waapi.pepipost.com/api/v2/message/"
-    // }
-
-    console.log("hostUrl: ", hostUrl);
-    console.log("body: ", JSON.stringify(body));
-
+    // console.log("hostUrl: ", hostUrl);
+    // console.log("body: ", JSON.stringify(body));
+    body = JSON.stringify(setMessageTo(body, incomingMsg));
+    
     try {
-        body = setMessageTo(req, body)
-        const response = await axios.post(
-            hostUrl,
-            body,
-            {
-                headers: {
-                    Authorization: `Bearer ${NETCORE_TOKEN}`,
-                }
-            }
-        );
-        console.log("webhook => Sent message to WhatsApp");
-        res.status(response.status).send(response.statusText);
+
+        let config = {
+            method: 'post',
+            maxBodyLength: Infinity,
+            url: 'https://cpaaswa.netcorecloud.net/api/v2/message/nc',
+            headers: { 
+              'Authorization': `Bearer ${NETCORE_TOKEN}`, 
+              'Content-Type': 'application/json'
+            },
+            data : body
+          };
+        const request = await axios.request(config);
+        request
+        .then((response) => {
+            console.log(JSON.stringify(response.data));
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+        // response
+        // .then((res) => {
+        //     console.log("webhook => Sent message to WhatsApp");
+        //     res.sendStatus(200);
+        // })
+        // .catch((error)=> {
+        //     if( error.response ){
+        //         console.log("webhook => error occurred with status code:", error.response);
+        //     }
+        // })
+
+        
+        // res.sendStatus(200);
+        //res.status(response.status).send(response.statusText);
     } catch (error) {
-         console.log("webhook => error occurred with status code:", error);
-        res.status(error?.response?.status).send(error?.response?.statusText);
+         console.log("webhook => error occurred with status code:", error.response);
+        // res.sendStatus(error?.response?.status).json({"error": error?.response?.statusText} );
     }
      
 }
 
-const setMessageTo = async (req, body) => {
+const setMessageTo = (body, incomingMsg) => {
     if(body.incoming_message) {
-        body.incoming_message[0].to = req.body.incoming_message[0].from;
+        body.incoming_message[0].to = incomingMsg.from;
     } else {
-        body.message[0].recipient_whatsapp = req.body.incoming_message[0].from;
+        body.message[0].recipient_whatsapp = incomingMsg.from;
     }
     console.log("setMessageTo: ", JSON.stringify(body));
 
@@ -83,7 +93,8 @@ const webhook = async (req, res) => {
     console.log("IncomingMsg", JSON.stringify(msg));
     
     if(!msg){
-        res.sendStatus(200);
+        console.log("XXX no message", msg);
+        res.sendStatus(402);
         return;
     } 
 
@@ -101,157 +112,15 @@ const webhook = async (req, res) => {
         console.log("First time user");
         let body = language.getLangSelection(); //botMessage.getBotMessage('en', null, "lang_selection");
         // Object.assign(body, toMobile);//.recipient_whatsapp = WHATSAPP_TO;
+        // postmanCode();
+        sendMessage(body, msg)
 
-        sendMessage(req, res, body)
         // req.session.languageSelection = null
         // req.session.userSelection = null
-
+        res.sendStatus(200);
     } 
-    res.sendStatus(200);
-    // if (((!userSelection && msg?.message_type !== 'interactive') || msg?.interactive_type?.button_reply.id === 'end')) {
-    //     console.log('incoming', msg);
-    //     let body = {
-    //         "message": [
-    //             {
-    //                 "recipient_whatsapp": msg.recipient_whatsapp,
-    //                 "message_type": "interactive",
-    //                 "recipient_type": "individual",
-    //                 "source": "e4aba266d56a3726c36a2053d70c989d",
-    //                 "x-apiheader": "custom_data",
-    //                 "type_interactive": [
-    //                     {
-    //                         "type": "button",
-    //                         "body": "Welcome to Digital Jadui Pitara \n Please select the options below",
-    //                         "action": [
-    //                             {
-    //                                 "buttons": [
-    //                                     {
-    //                                         "type": "reply",
-    //                                         "reply": {
-    //                                             "id": "1",
-    //                                             "title": "Stories"
-    //                                         }
-    //                                     },
-    //                                     {
-    //                                         "type": "reply",
-    //                                         "reply": {
-    //                                             "id": "2",
-    //                                             "title": "Teachers"
-    //                                         }
-    //                                     },
-    //                                     {
-    //                                         "type": "reply",
-    //                                         "reply": {
-    //                                             "id": "3",
-    //                                             "title": "Students"
-    //                                         }
-    //                                     }
-    //                                 ]
-    //                             }
-    //                         ]
-    //                     }
-    //                 ]
-    //             }
-    //         ]
-
-    //     }
-
-    //     axios.post(
-    //         `https://waapi.pepipost.com/api/v2/message/`,
-    //         body,
-    //         {
-    //             headers: {
-    //                 Authorization: `Bearer ${NETCORE_TOKEN}`,
-    //             }
-    //         }).then(
-    //             (response) => {
-    //                 console.log("webhook => Sent initial message to WhatsApp");
-    //                 res.status(response.status).send(response.statusText);
-    //             },
-    //             (error) => {
-    //                 console.log("webhook => error occured  with status code:", error.response.status);
-    //                 res.status(error.response.status).send(error.response.statusText);
-    //             }
-    //         );
-
-    //     await req?.session?.destroy((err) => {
-    //         if (err) {
-    //             console.error('Error destroying session:', err);
-    //             res.sendStatus(500);
-    //         } else {
-    //             console.log('Session cleared successfully');
-    //         }
-    //     })
-    // } else {
-    //     console.log('USER Selection----', userSelection)
-
-    //     if (!userSelection) {
-    //         // If not present, set the default value from the incoming message
-    //         userSelection = msg.interactive_type.button_reply.id;
-    //         req.session.userSelection = userSelection;
-    //         console.log('Value not present. Setting userSelection:', userSelection);
-    //     } else {
-    //         console.log('Existing userSelection:', userSelection);
-    //     }
-
-    //     // let endMsg = "\n 0: Go to 'Main Menu' \n 1: 'Change Lang'";
-    //     let botResponse = await getBotMessage(msg, userSelection);
-    //     console.log("webhook => botResponse", botResponse?.answer.trim(100));
-    //     let ansStr = botResponse?.answer.substring(0, `${CHAR_LIMIT}`)
-    //     axios({
-    //         "method": "post",
-    //         "url": `https://waapi.pepipost.com/api/v2/message/`,
-    //         "data": {
-    //             "message": [
-    //                 {
-    //                     "recipient_whatsapp": WHATSAPP_TO,
-    //                     "message_type": "interactive",
-    //                     "recipient_type": "individual",
-    //                     "source": "e4aba266d56a3726c36a2053d70c989d",
-    //                     "x-apiheader": "custom_data",
-    //                     "type_interactive": [
-    //                         {
-    //                             "type": "button",
-    //                             "body": botResponse?.answer,
-    //                             "action": [
-    //                                 {
-    //                                     "buttons": [
-    //                                         {
-    //                                             "type": "reply",
-    //                                             "reply": {
-    //                                                 "id": "end",
-    //                                                 "title": "Start Again"
-    //                                             }
-    //                                         }
-    //                                     ]
-    //                                 }
-    //                             ]
-    //                         }
-    //                     ]
-    //                 }
-    //             ]
-
-    //         },
-    //         headers: {
-    //             "Authorization": `Bearer ${WHATSAPP_TOKEN}`,
-    //             "Content-Type": "application/json"
-    //         },
-    //     })
-    //         .then(
-    //             (response) => {
-    //                 console.log("webhook => Sent message to WhatsApp");
-    //                 res.status(response.status).send(response.statusText);
-    //             },
-    //             (error) => {
-    //                 console.log("webhook => error occured  with status code:", error.response.status);
-    //                 // console.log("webhook => error:");
-    //                 res.status(error.response.status).send(error.response.statusText);
-    //             }
-    //         );
-    // }
+    
 }
-
-
 
 const getBotMessage = async (msg, userSelection) => {
     if (msg) {
@@ -286,4 +155,88 @@ const test = (req, res) => {
     res.status(200).send('Netcore service API testing..');
 };
 
-module.exports = { sendMessage, webhook, test }
+// To test Netcore webhook
+const testWebhook = (req, res) => {
+    console.log("Webhook test: ", JSON.stringify(req.body));
+    let result = 
+      {
+              "TRANSID": 15536250111702803,
+              "RESPONSE": " - 2.0.0 (success)",
+              "EMAIL": "test@gmail.com",
+              "TIMESTAMP": 1553681625,
+              "FROMADDRESS": "info@mydomain.com",
+              "EVENT": "sent",
+              "MSIZE": 2155,
+              "X-APIHEADER": "UNIQUEID",
+              "TAGS": "mytag1"
+      };
+  
+    
+     res.send(result);
+  };
+
+
+  const postmanCode = () => {
+    let data = JSON.stringify({
+        "message": [
+          {
+            "recipient_whatsapp": "919964300623",
+            "recipient_type": "individual",
+            "message_type": "interactive",
+            "x-apiheader": "custom_data",
+            "source": "e4aba266d56a3726c36a2053d70c989d",
+            "type_interactive": [
+              {
+                "type": "button",
+                "header": {
+                  "type": "text",
+                  "text": "Welcome to e-JaadhuPitaraa"
+                },
+                "body": "Namaste 🙏  \n\nSelect language",
+                "action": [
+                  {
+                    "buttons": [
+                      {
+                        "type": "reply",
+                        "reply": {
+                          "id": "lang__en",
+                          "title": "English"
+                        }
+                      },
+                      {
+                        "type": "reply",
+                        "reply": {
+                          "id": "lang__hi",
+                          "title": "हिंदी"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      });
+      
+      let config = {
+        method: 'post',
+        maxBodyLength: Infinity,
+        url: 'https://cpaaswa.netcorecloud.net/api/v2/message/nc',
+        headers: { 
+          'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJuZXRjb3Jlc2FsZXNleHAiLCJleHAiOjI0MjUxMDI1MjZ9.ljC4Tvgz031i6DsKr2ILgCJsc9C_hxdo2Kw8iZp9tsVcCaKbIOXaFoXmpU7Yo7ob4P6fBtNtdNBQv_NSMq_Q8w', 
+          'Content-Type': 'application/json'
+        },
+        data : data
+      };
+      
+      axios.request(config)
+      .then((response) => {
+        console.log(JSON.stringify(response.data));
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+  module.exports = { sendMessage, webhook, test, testWebhook }
