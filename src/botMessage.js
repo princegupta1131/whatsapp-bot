@@ -2,7 +2,7 @@ const fs = require('fs');
 const {language_dict} = require("./language");
 
 
-const getBotMessage = (language,botId, key) => { 
+const getBotMessage = (language, botId, key) => { 
     console.log("getBotMessage: ", language, botId, key);
     console.log('message',botId ?language_dict[language][botId][key] : language_dict[language][key])
     // console.log('bid',botId)
@@ -14,7 +14,7 @@ const getBotWelcomeMessage = (language='en',botId) => {
     return getBotMessage(language,botId, "hi");
 }
 
-const getBotSelection = (lang='en') => {
+const getBotSelection = (lang ='en') => {
   console.log("Bot - Lang: ", lang);
   console.log(language_dict[lang]["bot_selection"]);
   return getBotMessage(lang, null, "bot_selection");

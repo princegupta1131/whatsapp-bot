@@ -1,6 +1,20 @@
 {
     "bot_1": {
-        "hi": "You can create your own story. What kind of story do you want? For example, I can tell a story about a boy who saw the sea for the first time, or a story about a girl riding a horse"
+        "hi": {
+            "message": [
+                {
+                    "recipient_type": "individual",
+                    "message_type": "text",
+                    "x-apiheader": "custom_data",
+                    "type_text": [
+                        {
+                            "preview_url": "false",
+                            "content": "You can create your own story. What kind of story do you want? For example, I can tell a story about a boy who saw the sea for the first time, or a story about a girl riding a horse"
+                        }
+                    ]
+                }
+            ]
+        }
     },
     "bot_2": {
         "hi": "What kind of activity do you want? For example, I can suggest you how to teach sorting to your children in a class"
@@ -96,15 +110,33 @@
         ]
     },
     "footer_message": {
-        "messaging_product": "whatsapp",
-        "text": {
-            "body": "\n \n Hope you liked it! \n -If you want to go to previous menu enter “*”. \n -If you want to go to main menu enter “#”"
-        }
+        "message": [
+            {
+                "recipient_type": "individual",
+                "message_type": "text",
+                "x-apiheader": "custom_data",
+                "type_text": [
+                    {
+                        "preview_url": "false",
+                        "content": "\n \n Hope you liked it! \n -If you want to go to previous menu enter “*”. \n -If you want to go to main menu enter “#”"
+                    }
+                ]
+            }
+        ]
     },
     "loading_message": {
-        "messaging_product": "whatsapp",
-        "text": {
-            "body": "Preparing response! Please wait!!"
-        }
+        "message": [
+            {
+                "recipient_type": "individual",
+                "message_type": "text",
+                "x-apiheader": "custom_data",
+                "type_text": [
+                    {
+                        "preview_url": "false",
+                        "content": "Preparing response! Please wait!!"
+                    }
+                ]
+            }
+        ]
     }
 }

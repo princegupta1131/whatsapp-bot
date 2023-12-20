@@ -2,6 +2,7 @@ const session = require('express-session');
 
 const inMemoryStore = {};
 const sessionLangKey = "lang";
+const sessionBotKey = "bot";
 var isLangSelection, isBotSelection;
 
 // const PROPERTIES = {
@@ -45,21 +46,21 @@ const setUserLanguage = (req, msg) => {
     console.log("⭆ setUserLanguage: ", msg);
     
     let userReplyBtnId = msg?.interactive_type?.button_reply?.id;
-    let langKey =  userReplyBtnId && userReplyBtnId.includes(sessionLangKey) && userReplyBtnId?.split('__')[1]
-    console.log('User selected Language: ',langKey)
+    let selLang =  userReplyBtnId && userReplyBtnId.includes(sessionLangKey) && userReplyBtnId?.split('__')[1]
+    console.log('User selected Language: ',selLang)
 
-    if (langKey) {
+    if (selLang) {
         // If not present, set the default value from the incoming message
-        req.session[sessionLangKey] = langKey;
-        console.log(`✅ Language set ${langKey}, req session`, req.session);
+        req.session[sessionLangKey] = selLang;
+        console.log(`✅ Language set ${selLang}, req session`, req.session);
     } else {
-        console.log('❌ User selection: ', msg?.interactive_type?.button_reply);
+        console.log('❌ User selection lang: ', msg?.interactive_type?.button_reply);
         // if (id && languageSelection !== id && id.includes('lan')) {
         //     req.session.languageSelection = id;
         //     console.log('Updated languageSelection:', id);
         // }
     }
-    return isLangSelection;
+    return selLang;
 }
 
 const getUserLanguage = (req, msg) => {
@@ -69,33 +70,38 @@ const getUserLanguage = (req, msg) => {
 } 
 
 const setUserBot = (req, msg) => {
-  let botId = msg?.interactive?.button_reply?.id && msg?.interactive?.button_reply?.id.includes('bot') && msg?.interactive?.button_reply?.id?.split('__')[1]
+  console.log("⭆ setUserLanguage: ", msg);
+  let userReplyBtnId = msg?.interactive_type?.button_reply?.id;
+  let botId =  userReplyBtnId && userReplyBtnId.includes(sessionBotKey) && userReplyBtnId?.split('__')[1]
+    
+  // let botId = msg?.interactive?.button_reply?.id && msg?.interactive?.button_reply?.id.includes('bot') && msg?.interactive?.button_reply?.id?.split('__')[1]
    if (botId) {
         // If not present, set the default value from the incoming message
         // userSelection = id;
-       isBotSelection = botId;
-        req.session.userSelection = botId;
+        // isBotSelection = botId;
+        req.session[sessionBotKey] = botId;
      
        
-        var memUserSes = getSession(req, msg);
-        memUserSes.userSelection = botId;
-        Object.assign(inMemoryStore, memUserSes);
-        console.log("=== setSession: ", memUserSes);
+        // var memUserSes = getSession(req, msg);
+        // memUserSes.userSelection = botId;
+        // Object.assign(inMemoryStore, memUserSes);
+        // console.log("=== setSession: ", memUserSes);
        
-        console.log('Session - User selected bot: ', botId);
-        console.log('req session', req.session);
-    } else {
-        console.log('XX Session user bot section does not exist.');
+        // console.log('Session - User selected bot: ', botId);
+        // console.log('req session', req.session);
+        console.log(`✅ User selected bot ${botId}, req session`, req.session);
+      } else {
+        console.log('❌ User selection bot: ', msg?.interactive_type?.button_reply);
         // if (id && userSelection !== id) {
         //     req.session.userSelection = id;
         //     console.log('Updated userSelection:', id);
         // }
     }
-  return isBotSelection
+  return botId;
 } 
 
 const getUserBot = (req, msg) => {
-  return req?.session?.userSelection || getSession(req, msg).userSelection;
+  return req?.session[sessionBotKey];
 } 
 
 const getAudience = (req) => {

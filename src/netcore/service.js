@@ -37,40 +37,37 @@ const webhook = async (req, res) => {
         res.sendStatus(402);
         return;
     } 
-
     userSession.createSession(req, msg);
 
-    if(msg?.message_type === 'interactive') {
-        isLangSelection = userSession.getUserLanguage(req, msg);
-        isBotSelection = userSession.getUserBot(req, msg);
-    }
+    isLangSelection = userSession.getUserLanguage(req, msg);
+    isBotSelection = userSession.getUserBot(req, msg);
     
     console.log('req session', req.session);
-    console.log("languageSelection: ", isLangSelection, ' userSelection: ', isBotSelection);
+    console.log("languageSelection: ", isLangSelection, ' BotSelection: ', isBotSelection);
     // WHATSAPP_TO = msg?.from || msg?.recipient_whatsapp;
 
     if (utils.isFirstTimeUser(msg) || msg?.text_type?.text == '#') {
         console.log("First time user");
         messages.sendLangSelection(msg);
         res.sendStatus(200);
-    } else if ((!isLangSelection || msg?.text?.body == '*')) {
+    } else if (!isLangSelection || msg?.text_type?.text == '*') {
+        console.log("🇮🗣 Language selected");
         userSession.setUserLanguage(req, msg);
         messages.sendBotSelection(req, msg);
+        res.sendStatus(200);
+    } else if (!isBotSelection){
+        console.log("🤖〠 Bot selected");
+        userSession.setUserBot(req, msg);
+        messages.sendBotWelcomeMsg(req, msg);
         res.sendStatus(200);
     } else {
         // existing user & converstaion is happening
         console.log('User query')
-        // userSelection = util.setUserSelection(req, msg?.interactive?.button_reply?.id, userSelection)
-        let langKey = userSession.getUserLanguage(req, msg) || 'en';
-
-        //Loading
-        let loadingBody = botMessage.getBotMessage(langKey, null, "loading_message");
-        // loadingBody.to = WHATSAPP_TO;
-        // await sendMessage(req, res, loadingBody);
-
+        await messages.sendBotResponse(req, msg);
+        
         //Bot response
         // let botResponse = await util.getBotMessage(msg, userSelection);
-        // let ansStr = botResponse?.answer.substring(0, 800);
+        // let ansStr = botResponse?.answer.substri,ng(0, 800);
 
         // let body = {
         //     "messaging_product": "whatsapp",
@@ -81,10 +78,7 @@ const webhook = async (req, res) => {
         // }
         // await sendMessage(req, res, body);
 
-        //Footer message
-        // let footerBody = botMessage.getBotMessage(langKey, null, "footer_message");
-        // footerBody.to = WHATSAPP_TO;
-        // await sendMessage(req, res, footerBody);
+        res.sendStatus(200);
     }
     
 }
