@@ -48,43 +48,47 @@
         }
     },
     "lang_selection": {
-        "messaging_product": "whatsapp",
-        "type": "interactive",
-        "interactive": {
-            "type": "button",
-            "header": {
-                "type": "text",
-                "text": "Welcome to e-JaaduiPitaraa"
-            },
-            "body": {
-                "text": "Namaste 🙏 \n\nSelect Language"
-            },
-            "action": {
-                "buttons": [
+        "message": [
+            {
+                "recipient_type": "individual",
+                "message_type": "interactive",
+                "x-apiheader": "custom_data",
+                "source": "e4aba266d56a3726c36a2053d70c989d",
+                "type_interactive": [
                     {
-                        "type": "reply",
-                        "reply": {
-                            "id": "lang__en",
-                            "title": "English"
-                        }
-                    },
-                    {
-                        "type": "reply",
-                        "reply": {
-                            "id": "lang__hi",
-                            "title": "हिंदी"
-                        }
-                    },
-                    {
-                        "type": "reply",
-                        "reply": {
-                            "id": "lang__ka",
-                            "title": "ಕನ್ನಡ"
-                        }
+                        "type": "button",
+                        "header": {
+                            "type": "text",
+                            "text": "Welcome to e-JaadhuPitaraa"
+                        },
+                        "body": "Namaste 🙏  \n\nSelect language",
+                        "action": [
+                            {
+                                "buttons": [
+                                    {
+                                        "type": "reply",
+                                        "reply": {
+                                            "id": "lang__en",
+                                            "title": "English"
+                                        }
+                                    },
+                                    {
+                                        "type": "reply",
+                                        "reply": {
+                                            "id": "lang__hi",
+                                            "title": "हिंदी"
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
                     }
                 ]
             }
-        }
+        ]
+    },
+    "lang_selection_tele": {
+
     },
     "footer_message": {
         "messaging_product": "whatsapp",
