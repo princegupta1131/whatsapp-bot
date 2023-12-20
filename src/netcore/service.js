@@ -6,6 +6,8 @@ const userSession = require("../session");
 const utils = require('./utils');
 const messages = require('./messages');
 const botFile = fs.readFileSync('assets/bots.json', 'utf-8');
+const telemetryService = require('../telemetryService');
+// const footerFile = fs.readFileSync('assets/footer.json', 'utf-8');
 
 const NETCORE_TOKEN = process.env.NETCORE_TOKEN;
 
@@ -14,6 +16,7 @@ const bots = JSON.parse(botFile);
 // const footer = JSON.parse(footerFile);
 
 var isLangSelection, isBotSelection;
+let telemetry = new telemetryService();
 
 const webhook = async (req, res) => {
     // console.log("webhook: ", req.body);
@@ -37,6 +40,8 @@ const webhook = async (req, res) => {
         res.sendStatus(402);
         return;
     } 
+    // telemetry Initializing
+    telemetry.initEvent()
     userSession.createSession(req, msg);
 
     isLangSelection = userSession.getUserLanguage(req, msg);
@@ -48,6 +53,7 @@ const webhook = async (req, res) => {
 
     if (utils.isFirstTimeUser(msg) || msg?.text_type?.text == '#') {
         console.log("First time user");
+        telemetry.startEvent(req, msg)
         messages.sendLangSelection(msg);
         res.sendStatus(200);
     } else if (!isLangSelection || msg?.text_type?.text == '*') {
