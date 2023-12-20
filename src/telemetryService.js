@@ -3,9 +3,10 @@ const axios = require('axios');
 const dateFormat = require('dateformat');
 const uuidv1 = require('uuid/v1');
 const _ = require('lodash');
+const session = require('./session');
 
 let TELEMETRY_URL = process.env.TELEMETRY_SERVICE_URL;
-let SB_AUTH_TOKEN = process.env.SUNBIRD_API_TOKEN;
+let TELEMETRY_AUTH_TOKEN = process.env.API_TOKEN;
 
 var default_config = {
   'runningEnv': 'server',
@@ -21,6 +22,7 @@ function telemetryService() {}
  */
 telemetryService.prototype.config = {}
 telemetryService.prototype.context = []
+let telemetry = new telemetryService();
 
 
 /**
@@ -30,42 +32,76 @@ telemetryService.prototype.context = []
  * @returns {object} - Telemetry data object containing context, object, and edata.
  */
 
-telemetryService.prototype.createData  = (msg, eventType,req) => {
-  console.log('checkSessionData',req?.session?.languageSelection,req?.session?.userSelection)
+telemetryService.prototype.createData  = (req,eventType, msg) => {
+  let isLangSelection = session.getUserLanguage(req, msg);
+  let isBotSelection = session.getUserBot(req, msg);
+  console.log('checkSessionData',isLangSelection,isBotSelection)
   const context = {
     env: 'dev',
-    cdata: JSON.stringify([ {id: "en", type: req?.session?.languageSelection},{id:"bot_1", type: req?.session?.userSelection }]), //currently hardcoded
-    sid: uuidv1(msg?.from),
-    did:  uuidv1(msg?.from),
+    cdata: [ {id: isLangSelection || 'en', type:'Language' },{id: isBotSelection || 'bot_1', type: 'Bot' }], //currently hardcoded
+    sid: (msg?.from) * 12345,
+    did: (msg?.from) * 12345,
+    pdata: {id:"org.djp.whatsapp",pid:"org.djp",ver:"1.0"}
   };
+
   const actor = { 
-    id: msg?.from,
-     type: 'user'
+    id: (msg?.from) * 12345,
+     type: 'User'
      };
 
   const object =  {
-    id: 'uid',
-    type: 'whatsapp',
+    id: (msg?.from) * 12345,
+    type: 'Whatsapp',
     ver: '1.0',
     rollup: {},
   };
 
-  const edata = JSON.stringify({
-    type: eventType,
-    mode: eventType === 'session' ? 'preview' : '',
-    duration: 0,
-  });
+  const edata = {};
 
-  if (eventType === 'api_call') {
-    edata.level = 'TRACE';
+  if (eventType === 'log') {
+    edata.type = 'api_call';
+    edata.level = 'INFO';
     edata.message = JSON.stringify(msg?.text_type) || '';
-    edata.params = JSON.stringify([{ message_id: msg?.message_id }, { message_type: msg?.message_type }]);
+    edata.params = [{ message_id: msg?.message_id }, { message_type: msg?.message_type }];
+  }
+  else if(eventType === 'start') {
+    edata.type = 'session'
+    edata.mode =  "preview"
+    edata.duration = 1;
   }
 
-  return { context, object, edata,actor };
+  return { context, object, edata, actor};
 };
 
+/**
+ * Initializes telemetry event.
+ * @description Initializes telemetry event based on telemetry configuration.
+ */
+telemetryService.prototype.initEvent = function() {
+  telemetry.init(telemetry.config);
+}
 
+/**
+ * Starts telemetry event.
+ * @description Starts telemetry event with the given request and message data.
+ * @param {Object} req - The request object.
+ * @param {Object} msg - The message object.
+ */
+telemetryService.prototype.startEvent = function(req,msg) {
+  let StartData = telemetry.createData(req, 'start',msg);
+  telemetry.start(StartData);
+}
+
+/**
+ * Logs telemetry event.
+ * @description Logs telemetry event with the given request and message data.
+ * @param {Object} req - The request object.
+ * @param {Object} msg - The message object.
+ */
+telemetryService.prototype.logEvent = function(req,msg) {
+  let logData = telemetry.createData(req, 'log',msg);
+  telemetry.log(logData);
+}
 
 /**
  * @description Handles the synchronization manager for telemetry service.
@@ -83,7 +119,7 @@ function SyncManager() {
    * @param {any} event - Event data to dispatch.
    */
   this.dispatch = function (event) {
-    console.log('dispacher', event);
+    console.log('dispacher', JSON.stringify(event));
     sendTelemetry('req', [event], ''); // Dispatch telemetry event
   };
 }
@@ -159,14 +195,14 @@ function sendTelemetry(req, eventsData, callback) {
 
   // Prepare telemetry data request body
   var data = prepareTelemetryRequestBody(req, eventsData);
-  console.log('TELEMETRY_URL',TELEMETRY_URL,SB_AUTH_TOKEN)
+  console.log('TELEMETRY_URL',TELEMETRY_URL,TELEMETRY_AUTH_TOKEN)
   // Set up the configuration for the axios request
   var axiosConfig = {
     method: 'POST',
-    url: 'http://152.67.162.156:9001/v1/telemetry',
+    url: TELEMETRY_URL,
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer token'
+      'Authorization': 'Bearer' + TELEMETRY_AUTH_TOKEN
     },
     data: data // The telemetry data to send
   };
