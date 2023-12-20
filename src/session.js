@@ -1,6 +1,7 @@
 const session = require('express-session');
 
 const inMemoryStore = {};
+const sessionLangKey = "lang";
 var isLangSelection, isBotSelection;
 
 // const PROPERTIES = {
@@ -19,30 +20,40 @@ const init = () => {
   console.log("Session init called.");
 }
 
-const createSession = (id, key, value) => {
+/**
+ * Returns user session id based of incoming message data
+ * @param {*} incomingMsg 
+ * @returns 
+ */
+const getUserSessionId = (incomingMsg) => {
+  return "user0623"
+}
+
+const createSession = (req, incomingMsg) => {
   // inMemoryStore[id]
+  let sessionId = req?.session?.sessionId;
+  if(!sessionId) {
+    sessionId = getUserSessionId(incomingMsg);
+    req.session.sessionId = sessionId;
+    console.log("✅ new session created: ", sessionId);
+  } else {
+    console.log("✓ session already exist: ", sessionId);
+  }
 }
 
 const setUserLanguage = (req, msg) => {
-    let langKey = msg?.interactive?.button_reply?.id && msg?.interactive?.button_reply?.id.includes('lang') && msg?.interactive?.button_reply?.id?.split('__')[1]
+    console.log("⭆ setUserLanguage: ", msg);
+    
+    let userReplyBtnId = msg?.interactive_type?.button_reply?.id;
+    let langKey =  userReplyBtnId && userReplyBtnId.includes(sessionLangKey) && userReplyBtnId?.split('__')[1]
     console.log('User selected Language: ',langKey)
 
     if (langKey) {
         // If not present, set the default value from the incoming message
-       // let langKey = msg?.interactive?.button_reply?.id.split('_')[1]
-        // languageSelection = id;
-        isLangSelection = langKey;
-        req.session.languageSelection = isLangSelection;
-        
-       let memUserSes = getSession(req, msg);
-        memUserSes.languageSelection = isLangSelection;
-        Object.assign(inMemoryStore, memUserSes);
-      console.log("=== setSession: ", memUserSes);
-      
-        console.log('Session - User selected lang: ', isLangSelection);
-        console.log('req session', req.session);
+        req.session[sessionLangKey] = langKey;
+        console.log(`✅ Language set ${langKey}, req session`, req.session);
     } else {
-        console.log('XX Session lang does not exist.');
+        console.log('❌ User selection: ', msg?.interactive_type?.button_reply);
         // if (id && languageSelection !== id && id.includes('lan')) {
         //     req.session.languageSelection = id;
         //     console.log('Updated languageSelection:', id);
@@ -52,7 +63,7 @@ const setUserLanguage = (req, msg) => {
 }
 
 const getUserLanguage = (req, msg) => {
-  let lang = req?.session?.languageSelection || getSession(req, msg).languageSelection;
+  let lang = req?.session[sessionLangKey];
   // if(!lang) lang = 'en';  // default lang "en"
   return lang;
 } 
@@ -93,17 +104,17 @@ const getAudience = (req) => {
 
 const getSession = (req, msg) => {
   var userSesKey = 'user'+ (msg?.context?.from || msg?.context?.display_phone_number);
-  let userSes = inMemoryStore[userSesKey];
-  if(!userSes) {
+  // let userSes = inMemoryStore[userSesKey];
+  // if(!userSes) {
     
-    userSes = {};
-    userSes[userSesKey] = {}
-    Object.assign(inMemoryStore, userSes);
-    console.log("XXX getSession:", userSes);
-  }
+  //   userSes = {};
+  //   userSes[userSesKey] = {}
+  //   Object.assign(inMemoryStore, userSes);
+  //   console.log("XXX getSession:", userSes);
+  // }
   
-  console.log("=== getSession: ", inMemoryStore);
-  return userSes;
+  // console.log("=== getSession: ", inMemoryStore);
+  return req.session;
 }
 
-module.exports = {init, getUserLanguage, setUserLanguage, setUserBot, getUserBot  }
+module.exports = {init, getUserLanguage, setUserLanguage, setUserBot, getUserBot, createSession }

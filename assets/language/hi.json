@@ -9,6 +9,52 @@
         "hi": "आप किस प्रकार की गतिविधि चाहते हैं? उदाहरण के लिए, मैं आपको सुझाव दे सकता हूं कि आप अपने बच्चे को रंगों के बारे में सीखने में कैसे शामिल कर सकते हैं"
     },
     "bot_selection": {
+        "message": [
+            {
+                "message_type": "interactive",
+                "recipient_type": "individual",
+                "recipient_whatsapp": "919964300623",
+                "x-apiheader": "custom_data",
+                "source": "e4aba266d56a3726c36a2053d70c989d",
+                "type_interactive": [
+                    {
+                        "type": "button",
+                        "header": {
+                            "type": "text",
+                            "text": "e-जादुयपीतारा"
+                        },
+                        "body": "मैं यहां अद्भुत कहानियों और गतिविधियों के साथ आपकी मदद करने के लिए हूं, जिनमें आप अपने बच्चों को शामिल कर सकते हैं! \n\nतुम क्या चाहते हो? ",
+                        "action": [{
+                            "buttons": [
+                                {
+                                    "reply": {
+                                        "id": "bot__bot_1",
+                                        "title": "कहानी"
+                                    },
+                                    "type": "reply"
+                                },
+                                {
+                                    "reply": {
+                                        "id": "bot__bot_2",
+                                        "title": "शिक्षक"
+                                    },
+                                    "type": "reply"
+                                },
+                                {
+                                    "reply": {
+                                        "id": "bot__bot_3",
+                                        "title": "जनक"
+                                    },
+                                    "type": "reply"
+                                }
+                            ]
+                    }]
+                    }
+                ]
+            }
+        ]
+    },
+    "bot_selection_old": {
         "messaging_product": "whatsapp",
         "type": "interactive",
         "interactive": {

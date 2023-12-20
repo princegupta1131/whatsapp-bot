@@ -9,51 +9,59 @@
         "hi": "What kind of activity do you want? For example, I can suggest you how you can engage your child to learn about colors"
     },
     "bot_selection": {
-        "messaging_product": "whatsapp",
-        "type": "interactive",
-        "interactive": {
-            "type": "button",
-            "header": {
-                "type": "text",
-                "text": "e-JaaduiPitara"
-            },
-            "body": {
-                "text": "I am here to help you with amazing stories and activities that you can engage your children with! \n\n What do you want? "
-            },
-            "action": {
-                "buttons": [
+        "message": [
+            {
+                "message_type": "interactive",
+                "recipient_type": "individual",
+                "recipient_whatsapp": "919964300623",
+                "x-apiheader": "custom_data",
+                "source": "e4aba266d56a3726c36a2053d70c989d",
+                "type_interactive": [
                     {
-                        "type": "reply",
-                        "reply": {
-                            "id": "bot__bot_1",
-                            "title": "A Story"
-                        }
-                    },
-                    {
-                        "type": "reply",
-                        "reply": {
-                            "id": "bot__bot_2",
-                            "title": "Teacher Activities"
-                        }
-                    },
-                    {
-                        "type": "reply",
-                        "reply": {
-                            "id": "bot__bot_3",
-                            "title": "Parent Activities"
-                        }
+                        "type": "button",
+                        "header": {
+                            "text": "e-JaaduiPitara",
+                            "type": "text"
+                        },
+                        "body": "I am here to help you with amazing stories and activities that you can engage your children with! \n\n What do you want? ",
+                        "action": [{
+                            "buttons": [
+                                {
+                                    "reply": {
+                                        "id": "bot__bot_1",
+                                        "title": "A Story"
+                                    },
+                                    "type": "reply"
+                                },
+                                {
+                                    "reply": {
+                                        "id": "bot__bot_2",
+                                        "title": "Teacher Activities"
+                                    },
+                                    "type": "reply"
+                                },
+                                {
+                                    "reply": {
+                                        "id": "bot__bot_3",
+                                        "title": "Parent Activities"
+                                    },
+                                    "type": "reply"
+                                }
+                            ]
+                    }]
                     }
                 ]
             }
-        }
+        ]
     },
     "lang_selection": {
         "message": [
             {
+                "recipient_whatsapp": "919964300623",
                 "recipient_type": "individual",
                 "message_type": "interactive",
                 "x-apiheader": "custom_data",
-                "source": "e4aba266d56a3726c36a2053d70c989d",
+                "source": "e4aba266d56a3726c36a2053d70c9899",
                 "type_interactive": [
                     {
                         "type": "button",
@@ -87,13 +95,16 @@
             }
         ]
     },
-    "lang_selection_tele": {
-
-    },
     "footer_message": {
         "messaging_product": "whatsapp",
         "text": {
             "body": "\n \n Hope you liked it! \n -If you want to go to previous menu enter “*”. \n -If you want to go to main menu enter “#”"
+        }
+    },
+    "loading_message": {
+        "messaging_product": "whatsapp",
+        "text": {
+            "body": "Preparing response! Please wait!!"
         }
     }
 }
