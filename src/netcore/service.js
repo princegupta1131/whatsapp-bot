@@ -2,7 +2,9 @@ const express = require("express");
 const axios = require("axios");
 const fs = require('fs');
 const language = require("../language");
-const session = require("../session");
+const userSession = require("../session");
+const utils = require('./utils');
+const messages = require('./messages');
 const botFile = fs.readFileSync('assets/bots.json', 'utf-8');
 const telemetryService = require('../telemetryService');
 // const footerFile = fs.readFileSync('assets/footer.json', 'utf-8');
@@ -16,83 +18,21 @@ const bots = JSON.parse(botFile);
 var isLangSelection, isBotSelection;
 let telemetry = new telemetryService();
 
-const sendMessage = async (body, incomingMsg) => {
-    // console.log("SendMessage: ", body);
-
-    // For Text convesations
-    let hostUrl = 'https://cpaaswa.netcorecloud.net/api/v2/message/nc';
-    
-    // console.log("hostUrl: ", hostUrl);
-    // console.log("body: ", JSON.stringify(body));
-    body = JSON.stringify(setMessageTo(body, incomingMsg));
-    
-    try {
-
-        let config = {
-            method: 'post',
-            maxBodyLength: Infinity,
-            url: 'https://cpaaswa.netcorecloud.net/api/v2/message/nc',
-            headers: { 
-              'Authorization': `Bearer ${NETCORE_TOKEN}`, 
-              'Content-Type': 'application/json'
-            },
-            data : body
-          };
-        const request = await axios.request(config);
-        request
-        .then((response) => {
-            console.log(JSON.stringify(response.data));
-        })
-        .catch((error) => {
-            console.log(error);
-        });
-        // response
-        // .then((res) => {
-        //     console.log("webhook => Sent message to WhatsApp");
-        //     res.sendStatus(200);
-        // })
-        // .catch((error)=> {
-        //     if( error.response ){
-        //         console.log("webhook => error occurred with status code:", error.response);
-        //     }
-        // })
-
-        
-        // res.sendStatus(200);
-        //res.status(response.status).send(response.statusText);
-    } catch (error) {
-         console.log("webhook => error occurred with status code:", error.response);
-        // res.sendStatus(error?.response?.status).json({"error": error?.response?.statusText} );
-    }
-     
-}
-
-const setMessageTo = (body, incomingMsg) => {
-    if(body.incoming_message) {
-        body.incoming_message[0].to = incomingMsg.from;
-    } else {
-        body.message[0].recipient_whatsapp = incomingMsg.from;
-    }
-    console.log("setMessageTo: ", JSON.stringify(body));
-
-    return body;
-}
-
 const webhook = async (req, res) => {
     // console.log("webhook: ", req.body);
     let incomingMsg, msg, toMobile;
     incomingMsg = req.body?.incoming_message;
     
 
-    if(!incomingMsg) {
-        // For interactive message
-        incomingMsg = req.body?.message;
-        toMobile = {"recipient_whatsapp": msg?.recipient_whatsapp};
-    } else {
-        toMobile = {"to": msg?.from}
-    }
+    // if(!incomingMsg) {
+    //     // For interactive message
+    //     incomingMsg = req.body?.message;
+    //     toMobile = {"recipient_whatsapp": msg?.recipient_whatsapp};
+    // } else {
+    //    toMobile = {"to": msg?.from}
+    // }
     msg = incomingMsg && incomingMsg[0];
-    let userSelection = await req?.session?.userSelection || null;
+    // let userSelection = await req?.session?.lang || null;
     console.log("IncomingMsg", JSON.stringify(msg));
     
     if(!msg){
@@ -102,30 +42,50 @@ const webhook = async (req, res) => {
     } 
     // telemetry Initializing
     telemetry.initEvent()
-    if(msg?.type === 'interactive') {
-        // telemetry log event
-        telemetry.logEvent(req,msg);
-        isLangSelection = session.getUserLanguage(req, msg);
-        isBotSelection = session.getUserBot(req, msg);
-    }
+    userSession.createSession(req, msg);
+
+    isLangSelection = userSession.getUserLanguage(req, msg);
+    isBotSelection = userSession.getUserBot(req, msg);
     
     console.log('req session', req.session);
-    console.log("languageSelection: ", isLangSelection, ' userSelection: ', isBotSelection);
+    console.log("languageSelection: ", isLangSelection, ' BotSelection: ', isBotSelection);
     // WHATSAPP_TO = msg?.from || msg?.recipient_whatsapp;
 
-    if (((!isLangSelection && !isBotSelection && (msg?.message_type.toString().toLowerCase() === 'text')) || msg?.text?.body == '#')) {
+    if (utils.isFirstTimeUser(msg) || msg?.text_type?.text == '#') {
         console.log("First time user");
-        // telemetry start event
-        telemetry.startEvent(req,msg)
-        let body = language.getLangSelection(); //botMessage.getBotMessage('en', null, "lang_selection");
-        // Object.assign(body, toMobile);//.recipient_whatsapp = WHATSAPP_TO;
-        // postmanCode();
-        sendMessage(body, msg)
-
-        // req.session.languageSelection = null
-        // req.session.userSelection = null
+        telemetry.startEvent(req, msg)
+        messages.sendLangSelection(msg);
         res.sendStatus(200);
-    } 
+    } else if (!isLangSelection || msg?.text_type?.text == '*') {
+        console.log("🇮🗣 Language selected");
+        userSession.setUserLanguage(req, msg);
+        messages.sendBotSelection(req, msg);
+        res.sendStatus(200);
+    } else if (!isBotSelection){
+        console.log("🤖〠 Bot selected");
+        userSession.setUserBot(req, msg);
+        messages.sendBotWelcomeMsg(req, msg);
+        res.sendStatus(200);
+    } else {
+        // existing user & converstaion is happening
+        console.log('User query')
+        await messages.sendBotResponse(req, msg);
+        
+        //Bot response
+        // let botResponse = await util.getBotMessage(msg, userSelection);
+        // let ansStr = botResponse?.answer.substri,ng(0, 800);
+
+        // let body = {
+        //     "messaging_product": "whatsapp",
+        //     "to": WHATSAPP_TO,
+        //     "text": {
+        //         "body": ansStr,
+        //     }
+        // }
+        // await sendMessage(req, res, body);
+
+        res.sendStatus(200);
+    }
     
 }
 
@@ -182,4 +142,4 @@ const testWebhook = (req, res) => {
      res.send(result);
   };
 
-  module.exports = { sendMessage, webhook, test, testWebhook }
+  module.exports = { webhook, test, testWebhook }

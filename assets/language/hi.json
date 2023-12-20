@@ -1,6 +1,20 @@
 {
     "bot_1": {
-        "hi": "आप अपनी खुद की कहानी बना सकते हैं. आप किस तरह की कहानी चाहते हैं? उदाहरण के लिए, मैं एक ऐसे लड़के की कहानी बता सकता हूँ जिसने पहली बार समुद्र देखा, या घोड़े पर सवार एक लड़की की कहानी बता सकता हूँ"
+        "hi": {
+            "message": [
+                {
+                    "recipient_type": "individual",
+                    "message_type": "text",
+                    "x-apiheader": "custom_data",
+                    "type_text": [
+                        {
+                            "preview_url": "false",
+                            "content": "आप अपनी खुद की कहानी बना सकते हैं. आप किस तरह की कहानी चाहते हैं? उदाहरण के लिए, मैं एक ऐसे लड़के की कहानी बता सकता हूँ जिसने पहली बार समुद्र देखा, या घोड़े पर सवार एक लड़की की कहानी बता सकता हूँ"
+                        }
+                    ]
+                }
+            ]
+        }
     },
     "bot_2": {
         "hi": "आप किस प्रकार की गतिविधि चाहते हैं? उदाहरण के लिए, मैं आपको सुझाव दे सकता हूं कि कक्षा में अपने बच्चों को छंटाई कैसे सिखाएं"
@@ -9,6 +23,52 @@
         "hi": "आप किस प्रकार की गतिविधि चाहते हैं? उदाहरण के लिए, मैं आपको सुझाव दे सकता हूं कि आप अपने बच्चे को रंगों के बारे में सीखने में कैसे शामिल कर सकते हैं"
     },
     "bot_selection": {
+        "message": [
+            {
+                "message_type": "interactive",
+                "recipient_type": "individual",
+                "recipient_whatsapp": "919964300623",
+                "x-apiheader": "custom_data",
+                "source": "e4aba266d56a3726c36a2053d70c989d",
+                "type_interactive": [
+                    {
+                        "type": "button",
+                        "header": {
+                            "type": "text",
+                            "text": "e-जादुयपीतारा"
+                        },
+                        "body": "मैं यहां अद्भुत कहानियों और गतिविधियों के साथ आपकी मदद करने के लिए हूं, जिनमें आप अपने बच्चों को शामिल कर सकते हैं! \n\nतुम क्या चाहते हो? ",
+                        "action": [{
+                            "buttons": [
+                                {
+                                    "reply": {
+                                        "id": "bot__bot_1",
+                                        "title": "कहानी"
+                                    },
+                                    "type": "reply"
+                                },
+                                {
+                                    "reply": {
+                                        "id": "bot__bot_2",
+                                        "title": "शिक्षक"
+                                    },
+                                    "type": "reply"
+                                },
+                                {
+                                    "reply": {
+                                        "id": "bot__bot_3",
+                                        "title": "जनक"
+                                    },
+                                    "type": "reply"
+                                }
+                            ]
+                    }]
+                    }
+                ]
+            }
+        ]
+    },
+    "bot_selection_old": {
         "messaging_product": "whatsapp",
         "type": "interactive",
         "interactive": {
@@ -87,15 +147,33 @@
         }
     },
     "footer_message": {
-        "messaging_product": "whatsapp",
-        "text": {
-            "body": "\n \n आशा है आपको यह पसंद आया होगा! \n -यदि आप पिछले मेनू पर जाना चाहते हैं तो '*' दर्ज करें। \n -यदि आप मुख्य मेनू पर जाना चाहते हैं तो '#' दर्ज करें"
-        }
+        "message": [
+            {
+                "recipient_type": "individual",
+                "message_type": "text",
+                "x-apiheader": "custom_data",
+                "type_text": [
+                    {
+                        "preview_url": "false",
+                        "content": "\n \n आशा है आपको यह पसंद आया होगा! \n -यदि आप पिछले मेनू पर जाना चाहते हैं तो '*' दर्ज करें। \n -यदि आप मुख्य मेनू पर जाना चाहते हैं तो '#' दर्ज करें"
+                    }
+                ]
+            }
+        ]
     },
     "loading_message": {
-        "messaging_product": "whatsapp",
-        "text": {
-            "body": "प्रतिक्रिया तैयार करना! कृपया प्रतीक्षा करें!!"
-        }
+        "message": [
+            {
+                "recipient_type": "individual",
+                "message_type": "text",
+                "x-apiheader": "custom_data",
+                "type_text": [
+                    {
+                        "preview_url": "false",
+                        "content": "प्रतिक्रिया तैयार करना! कृपया प्रतीक्षा करें!!"
+                    }
+                ]
+            }
+        ]
     }
 }
