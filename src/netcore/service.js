@@ -2,6 +2,7 @@ const express = require("express");
 const axios = require("axios");
 const fs = require('fs');
 const botFile = fs.readFileSync('assets/bots.json', 'utf-8');
+const telemetryService = require('../telemetryService');
 // const footerFile = fs.readFileSync('assets/footer.json', 'utf-8');
 
 
@@ -40,12 +41,21 @@ const sendMessage = (req, res) => {
 }
 
 const webhook = async (req, res) => {
-    let incomingMsg = req.body?.message || {};
+    const telemetry = new telemetryService();
+    let incomingMsg = req.body.incoming_message || {};
+    console.log('incoming1', incomingMsg);
     
-    let userSelection = await req?.session?.userSelection || null;
-    let msg = incomingMsg && incomingMsg[0];
-    if (((!userSelection && msg?.message_type !== 'interactive') || msg?.interactive_type?.button_reply.id === 'end')) {
-        console.log('incoming', incomingMsg);
+let userSelection = await req?.session?.userSelection || null;
+let msg = incomingMsg && incomingMsg[0];
+//telemetry event
+let StartData = telemetry.createData(msg, 'session',req);
+let logData = telemetry.createData(msg, 'api_call',req);
+telemetry.init(StartData)
+
+if (((!userSelection && msg?.message_type !== 'INTERACTIVE') || msg?.interactive_type?.button_reply.id === 'end')) {
+    console.log('incoming2', incomingMsg);
+    //telemetry start event
+        telemetry.start(StartData)
         let body = {
             "message": [
                 {
