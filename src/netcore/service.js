@@ -4,6 +4,8 @@ const fs = require('fs');
 const language = require("../language");
 const session = require("../session");
 const botFile = fs.readFileSync('assets/bots.json', 'utf-8');
+const telemetryService = require('../telemetryService');
+// const footerFile = fs.readFileSync('assets/footer.json', 'utf-8');
 
 const NETCORE_TOKEN = process.env.NETCORE_TOKEN;
 
@@ -12,6 +14,7 @@ const bots = JSON.parse(botFile);
 // const footer = JSON.parse(footerFile);
 
 var isLangSelection, isBotSelection;
+let telemetry = new telemetryService();
 
 const sendMessage = async (body, incomingMsg) => {
     // console.log("SendMessage: ", body);
@@ -97,9 +100,11 @@ const webhook = async (req, res) => {
         res.sendStatus(402);
         return;
     } 
-
-    
+    // telemetry Initializing
+    telemetry.initEvent()
     if(msg?.type === 'interactive') {
+        // telemetry log event
+        telemetry.logEvent(req,msg);
         isLangSelection = session.getUserLanguage(req, msg);
         isBotSelection = session.getUserBot(req, msg);
     }
@@ -110,6 +115,8 @@ const webhook = async (req, res) => {
 
     if (((!isLangSelection && !isBotSelection && (msg?.message_type.toString().toLowerCase() === 'text')) || msg?.text?.body == '#')) {
         console.log("First time user");
+        // telemetry start event
+        telemetry.startEvent(req,msg)
         let body = language.getLangSelection(); //botMessage.getBotMessage('en', null, "lang_selection");
         // Object.assign(body, toMobile);//.recipient_whatsapp = WHATSAPP_TO;
         // postmanCode();
