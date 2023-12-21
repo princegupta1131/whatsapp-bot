@@ -4,18 +4,19 @@
 //     fromMobile: Number
 // }
 
+var InBountInput = {
+    context: undefined,
+    text: undefined,
+    audio: undefined
+}
 class InBound {
-    id = "";
-    timestamp = "";
-    rawData = {};
-    userName = ""
-    fromMobile = 0;
-    type = "";
-    input = {
-        context: { },
-        text: "",
-        audio: "",
-    }
+    id;
+    timestamp;
+    rawData;
+    userName;
+    fromMobile;
+    type;
+    input = InBountInput;
 
     constructor(reqBody) {
         this.rawData = reqBody;
@@ -27,8 +28,8 @@ class InBoundGupshup extends InBound {
     constructor(reqBody) {
         super(reqBody);
         let payload = reqBody.payload;
-        this.id = payload.context.id;
-        this.timestamp = payload.timestamp,
+        this.id = payload.id;
+        this.timestamp = reqBody.timestamp,
         this.fromMobile = payload.sender.phone;
         this.userName = payload.sender.name
         this.type = payload.type;
