@@ -39,18 +39,18 @@ telemetryService.prototype.createData  = (req,eventType, msg) => {
   const context = {
     env: 'dev',
     cdata: [ {id: isLangSelection || 'en', type:'Language' },{id: isBotSelection || 'bot_1', type: 'Bot' }], //currently hardcoded
-    sid: (msg?.from) * 12345,
-    did: (msg?.from) * 12345,
+    sid: (msg?.sender?.phone) * 12345,
+    did: (msg?.sender?.phone) * 12345,
     pdata: {id:"org.djp.whatsapp",pid:"org.djp",ver:"1.0"}
   };
 
   const actor = { 
-    id: (msg?.from) * 12345,
+    id: (msg?.sender?.phone) * 12345,
      type: 'User'
      };
 
   const object =  {
-    id: (msg?.from) * 12345,
+    id: (msg?.sender?.phone) * 12345,
     type: 'Whatsapp',
     ver: '1.0',
     rollup: {},
@@ -61,7 +61,7 @@ telemetryService.prototype.createData  = (req,eventType, msg) => {
   if (eventType === 'log') {
     edata.type = 'api_call';
     edata.level = 'INFO';
-    edata.message = JSON.stringify(msg?.text_type) || '';
+    edata.message = msg?.payload?.text || '';
     edata.params = [{ message_id: msg?.message_id }, { message_type: msg?.message_type }];
   }
   else if(eventType === 'start') {
