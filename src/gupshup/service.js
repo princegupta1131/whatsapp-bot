@@ -21,7 +21,7 @@ var isLangSelection, isBotSelection;
 const webhook = async (req, res) => {
     // console.log("webhook: ", req.body);
     let incomingMsg, msg, toMobile;
-    incomingMsg = req.body?.payload;
+    incomingMsg = req.body?.incoming_message;
     
 
     // if(!incomingMsg) {
@@ -31,7 +31,7 @@ const webhook = async (req, res) => {
     // } else {
     //    toMobile = {"to": msg?.from}
     // }
-    msg = incomingMsg
+    msg = incomingMsg && incomingMsg[0];
     // let userSelection = await req?.session?.lang || null;
     console.log("IncomingMsg", JSON.stringify(msg));
     
@@ -51,12 +51,12 @@ const webhook = async (req, res) => {
     console.log("languageSelection: ", isLangSelection, ' BotSelection: ', isBotSelection);
     // WHATSAPP_TO = msg?.from || msg?.recipient_whatsapp;
 
-    if (utils.isFirstTimeUser(msg) || msg?.payload?.text == '#') {
+    if (utils.isFirstTimeUser(msg) || msg?.text_type?.text == '#') {
         console.log("First time user");
         telemetry.startEvent(req, msg)
         messages.sendLangSelection(msg);
         res.sendStatus(200);
-    } else if (!isLangSelection || msg?.payload?.text == '*') {
+    } else if (!isLangSelection || msg?.text_type?.text == '*') {
         console.log("🇮🗣 Language selected");
         userSession.setUserLanguage(req, msg);
         messages.sendBotSelection(req, msg);
@@ -119,7 +119,7 @@ const getBotMessage = async (msg, userSelection) => {
 
 // For Health check
 const test = (req, res) => {
-    res.status(200).send('Netcore service API testing..');
+    res.status(200).send('Gupshup service API testing..');
 };
 
 // To test Netcore webhook
