@@ -5,6 +5,7 @@ const language = require("../language");
 const userSession = require("../session");
 const utils = require('./utils');
 const messages = require('./messages');
+const inBoundGP = require('./InBound');
 const botFile = fs.readFileSync('assets/bots.json', 'utf-8');
 // const telemetryService = require('../telemetryService');
 // const footerFile = fs.readFileSync('assets/footer.json', 'utf-8');
@@ -124,20 +125,9 @@ const test = (req, res) => {
 
 // To test Netcore webhook
 const testWebhook = (req, res) => {
+
+    let result =  new inBoundGP.InBoundGupshup(req.body);
     console.log("Webhook test: ", JSON.stringify(req.body));
-    let result = 
-      {
-              "TRANSID": 15536250111702803,
-              "RESPONSE": " - 2.0.0 (success)",
-              "EMAIL": "test@gmail.com",
-              "TIMESTAMP": 1553681625,
-              "FROMADDRESS": "info@mydomain.com",
-              "EVENT": "sent",
-              "MSIZE": 2155,
-              "X-APIHEADER": "UNIQUEID",
-              "TAGS": "mytag1"
-      };
-  
     
      res.send(result);
   };
