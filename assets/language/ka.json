@@ -92,6 +92,21 @@
             "body": "\n \n ನೀವು ಅದನ್ನು ಇಷ್ಟಪಟ್ಟಿದ್ದೀರಿ ಎಂದು ಭಾವಿಸುತ್ತೇವೆ! \n -ನೀವು ಹಿಂದಿನ ಮೆನುಗೆ ಹೋಗಲು ಬಯಸಿದರೆ '*' ಅನ್ನು ನಮೂದಿಸಿ. \n -ನೀವು ಮುಖ್ಯ ಮೆನುಗೆ ಹೋಗಲು ಬಯಸಿದರೆ '#' ನಮೂದಿಸಿ"
         }
     },
+    "bot_answer": {
+        "message": [
+            {
+                "recipient_type": "individual",
+                "message_type": "text",
+                "x-apiheader": "custom_data",
+                "type_text": [
+                    {
+                        "preview_url": "false",
+                        "content": " "
+                    }
+                ]
+            }
+        ]
+    },
     "loading_message": {
         "messaging_product": "whatsapp",
         "text": {

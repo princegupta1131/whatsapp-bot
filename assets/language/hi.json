@@ -161,6 +161,21 @@
             }
         ]
     },
+    "bot_answer": {
+        "message": [
+            {
+                "recipient_type": "individual",
+                "message_type": "text",
+                "x-apiheader": "custom_data",
+                "type_text": [
+                    {
+                        "preview_url": "false",
+                        "content": " "
+                    }
+                ]
+            }
+        ]
+    },
     "loading_message": {
         "message": [
             {
