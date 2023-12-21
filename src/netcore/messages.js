@@ -53,6 +53,7 @@ const sendBotResponse = async (req, msg) => {
     let userBot = userSession.getUserBot(req, msg);
 
     await sendBotLoadingMsg(req, msg, userLang, userBot);
+    await sendBotAnswer(req, msg, userLang, userBot);
     await sendBotReplyFooter(req, msg, userLang, userBot);
 }
 
@@ -66,6 +67,25 @@ const sendBotLoadingMsg = async(req, msg, userLang, userBot) => {
     await sendMessage(body, msg);
 }
 
+const sendBotAnswer = async (req,msg,userLang, userBot) => {
+    console.log("⭆ sendBotAnswer"); 
+    console.log('msgcheck',JSON.stringify(msg))
+    let bodyMessage = botMessage.getBotMessage('en',null, 'bot_answer');
+    console.log('botbody',JSON.stringify(bodyMessage));
+    await fetchQueryRespone()
+  .then(queryResponse => {
+    bodyMessage.message.forEach(msg=> {
+        msg.type_text.forEach(text => {
+      text.content = queryResponse?.output?.text;
+    })
+    sendMessage(bodyMessage, msg);
+    console.log('responsedata',JSON.stringify(bodyMessage))
+})
+  })
+  .catch(err => {
+    console.error('Error in fetchQueryRespone:', err);
+  });
+}
 /**
  * Footer options for Bot response message
  * "*" to go main menu & "#" to go language selection
@@ -116,4 +136,38 @@ const setMessageTo = (body, incomingMsg) => {
     return body;
 }
 
-module.exports = { sendLangSelection, sendBotSelection, sendBotWelcomeMsg, sendMessage, sendBotResponse }
+const fetchQueryRespone = async (body, incomingMsg) => {
+    console.log("⭆ fetchQueryRespone"); 
+    console.log('fetchQueryRespone--invmsg', incomingMsg);
+    let data = {
+      "input": {
+        "language": "en",
+        "text": "A lion story",
+        "audienceType": "any"
+      },
+      "output": {
+        "format": "audio"
+      }
+    };
+  
+    var axiosConfig = {
+      method: 'POST',
+      url: 'http://144.24.130.223:7081/v1/query',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer'
+      },
+      data: data
+    };
+  
+    try {
+      const response = await axios(axiosConfig);
+      console.log('Telemetry request successful:', response.data);
+      return response.data; // Resolve the promise with response data
+    } catch (error) {
+      console.error('Telemetry request failed:', error);
+      throw error; // Throw an error to handle it wherever the function is called
+    }
+};
+
+module.exports = { sendLangSelection, sendBotSelection, sendBotWelcomeMsg, sendMessage, sendBotResponse ,fetchQueryRespone,sendBotAnswer}
