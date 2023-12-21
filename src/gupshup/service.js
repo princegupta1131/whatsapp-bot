@@ -119,7 +119,7 @@ const getBotMessage = async (msg, userSelection) => {
 
 // For Health check
 const test = (req, res) => {
-    res.status(200).send('Netcore service API testing..');
+    res.status(200).send('Gupshup service API testing..');
 };
 
 // To test Netcore webhook
