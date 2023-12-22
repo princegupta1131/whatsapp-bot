@@ -6,7 +6,7 @@ const userSession = require("../session");
 const utils = require('./utils');
 const messages = require('./messages');
 const botFile = fs.readFileSync('assets/bots.json', 'utf-8');
-// const telemetryService = require('../telemetryService');
+const telemetryService = require('../telemetryService');
 // const footerFile = fs.readFileSync('assets/footer.json', 'utf-8');
 
 const NETCORE_TOKEN = process.env.WA_PROVIDER_TOKEN;
@@ -16,12 +16,12 @@ const bots = JSON.parse(botFile);
 // const footer = JSON.parse(footerFile);
 
 var isLangSelection, isBotSelection;
-// let telemetry = new telemetryService();
+let telemetry = new telemetryService();
 
 const webhook = async (req, res) => {
     // console.log("webhook: ", req.body);
     let incomingMsg, msg, toMobile;
-    incomingMsg = req.body?.incoming_message;
+    incomingMsg = req.body?.payload;
     
 
     // if(!incomingMsg) {
@@ -31,7 +31,7 @@ const webhook = async (req, res) => {
     // } else {
     //    toMobile = {"to": msg?.from}
     // }
-    msg = incomingMsg && incomingMsg[0];
+    msg = incomingMsg
     // let userSelection = await req?.session?.lang || null;
     console.log("IncomingMsg", JSON.stringify(msg));
     
@@ -51,12 +51,12 @@ const webhook = async (req, res) => {
     console.log("languageSelection: ", isLangSelection, ' BotSelection: ', isBotSelection);
     // WHATSAPP_TO = msg?.from || msg?.recipient_whatsapp;
 
-    if (utils.isFirstTimeUser(msg) || msg?.text_type?.text == '#') {
+    if (utils.isFirstTimeUser(msg) || msg?.payload?.text == '#') {
         console.log("First time user");
         telemetry.startEvent(req, msg)
         messages.sendLangSelection(msg);
         res.sendStatus(200);
-    } else if (!isLangSelection || msg?.text_type?.text == '*') {
+    } else if (!isLangSelection || msg?.payload?.text == 'button_reply') {
         console.log("🇮🗣 Language selected");
         userSession.setUserLanguage(req, msg);
         messages.sendBotSelection(req, msg);
@@ -86,6 +86,8 @@ const webhook = async (req, res) => {
 
         res.sendStatus(200);
     }
+    telemetry.logEvent(req, msg)
+
     
 }
 

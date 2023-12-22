@@ -115,22 +115,25 @@ const sendMessage = async (body, incomingMsg) => {
         const request = await axios.request(config);
         request
         .then((response) => {
-            console.log(JSON.stringify(response.data));
+            // console.log(JSON.stringify(response.data));
         })
         .catch((error) => {
-            console.log(error);
+            // console.log(error);
         });
     } catch (error) {
-        console.log("webhook => error occurred with status code:", error.response);
+        // console.log("webhook => error occurred with status code:", error.response);
     }
      
 }
 
 const setMessageTo = (body, incomingMsg) => {
-    if(body.incoming_message) {
-        body.incoming_message[0].to = incomingMsg.from;
+  console.log("⭆ fetchQueryRespone", JSON.stringify(incomingMsg)); 
+  console.log("⭆ fetchQueryRespone", JSON.stringify(body)); 
+
+    if(body.source) {
+        body.source = incomingMsg?.payload?.source;
     } else {
-        body.message[0].recipient_whatsapp = incomingMsg.from;
+        body.source = incomingMsg?.payload?.sender?.phone;
     }
 
     return body;

@@ -62,7 +62,7 @@ telemetryService.prototype.createData  = (req,eventType, msg) => {
     edata.type = 'api_call';
     edata.level = 'INFO';
     edata.message = msg?.payload?.text || '';
-    edata.params = [{ message_id: msg?.message_id }, { message_type: msg?.message_type }];
+    edata.params = [{ message_id: msg?.context?.id }, { message_type:msg?.type }];
   }
   else if(eventType === 'start') {
     edata.type = 'session'
@@ -120,7 +120,7 @@ function SyncManager() {
    */
   this.dispatch = function (event) {
     console.log('dispacher', JSON.stringify(event));
-    sendTelemetry('req', [event], ''); // Dispatch telemetry event
+    // sendTelemetry('req', [event], ''); // Dispatch telemetry event
   };
 }
 

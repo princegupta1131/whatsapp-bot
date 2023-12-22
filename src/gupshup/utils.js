@@ -3,7 +3,7 @@
  * @param {*} incomingMsg 
  */
 const isFirstTimeUser = (incomingMsg) => {
-    if(incomingMsg?.context?.message_id) {
+    if(incomingMsg?.context?.id) {
         console.log("❌ isFirstTimeUser");
         return false;
     } else {
