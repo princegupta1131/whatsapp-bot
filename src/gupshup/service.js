@@ -20,9 +20,10 @@ var isLangSelection, isBotSelection;
 let telemetry = new telemetryService();
 
 const webhook = async (req, res) => {
-    // console.log("webhook: ", req.body);
-    let incomingMsg, msg, toMobile;
-    incomingMsg = req.body?.payload;
+    let incomingMsg =  new inBoundGP.InBoundGupshup(req.body);
+    console.log("webhook:tt ", incomingMsg);
+    // let incomingMsg, msg, toMobile;
+    // incomingMsg = req.body?.payload;
     
 
     // if(!incomingMsg) {
@@ -52,12 +53,12 @@ const webhook = async (req, res) => {
     console.log("languageSelection: ", isLangSelection, ' BotSelection: ', isBotSelection);
     // WHATSAPP_TO = msg?.from || msg?.recipient_whatsapp;
 
-    if (utils.isFirstTimeUser(msg) || msg?.payload?.text == '#') {
+    if (utils.isFirstTimeUser(req,msg) || msg?.type == '#') {
         console.log("First time user");
         telemetry.startEvent(req, msg)
         messages.sendLangSelection(msg);
         res.sendStatus(200);
-    } else if (!isLangSelection || msg?.payload?.text == 'button_reply') {
+    } else if (!isLangSelection) {
         console.log("🇮🗣 Language selected");
         userSession.setUserLanguage(req, msg);
         messages.sendBotSelection(req, msg);

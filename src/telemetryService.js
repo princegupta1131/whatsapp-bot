@@ -7,6 +7,8 @@ const session = require('./session');
 
 let TELEMETRY_URL = process.env.TELEMETRY_SERVICE_URL;
 let TELEMETRY_AUTH_TOKEN = process.env.API_TOKEN;
+let APP_ENV = process.env.APP_ENV;
+let APP_NAME = process.env.APP_NAME;
 
 var default_config = {
   'runningEnv': 'server',
@@ -39,18 +41,17 @@ telemetryService.prototype.createData  = (req,eventType, msg) => {
   const context = {
     env: 'dev',
     cdata: [ {id: isLangSelection || 'en', type:'Language' },{id: isBotSelection || 'bot_1', type: 'Bot' }], //currently hardcoded
-    sid: (msg?.sender?.phone) * 12345,
-    did: (msg?.sender?.phone) * 12345,
-    pdata: {id:"org.djp.whatsapp",pid:"org.djp",ver:"1.0"}
+    sid: (msg?.fromMobile) * 12345,
+    did: (msg?.fromMobile) * 12345,
+    pdata: {id:`${APP_ENV}.${APP_NAME}.whatsapp`,pid:"whatsapp-bot",ver:"1.0"}
   };
-
   const actor = { 
-    id: (msg?.sender?.phone) * 12345,
+    id: (msg?.fromMobile) * 12345,
      type: 'User'
      };
 
   const object =  {
-    id: (msg?.sender?.phone) * 12345,
+    id: (msg?.fromMobile) * 12345,
     type: 'Whatsapp',
     ver: '1.0',
     rollup: {},
@@ -61,8 +62,8 @@ telemetryService.prototype.createData  = (req,eventType, msg) => {
   if (eventType === 'log') {
     edata.type = 'api_call';
     edata.level = 'INFO';
-    edata.message = msg?.payload?.text || '';
-    edata.params = [{ message_id: msg?.context?.id }, { message_type:msg?.type }];
+    edata.message = msg?.input?.text || '';
+    edata.params = [{ message_id: msg?.id }, { message_type:msg?.type }];
   }
   else if(eventType === 'start') {
     edata.type = 'session'
@@ -202,7 +203,7 @@ function sendTelemetry(req, eventsData, callback) {
     url: TELEMETRY_URL,
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer' + TELEMETRY_AUTH_TOKEN
+      'Authorization': `Bearer ${ TELEMETRY_AUTH_TOKEN}`
     },
     data: data // The telemetry data to send
   };

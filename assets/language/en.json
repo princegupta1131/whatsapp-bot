@@ -2,7 +2,7 @@
     "lang_selection": {
         "channel": "whatsapp",
         "source": "917834811114",
-        "destination": "919964300623",
+        "destination": "917892950883",
         "message": {
             "type": "quick_reply",
             "msgid": "qr1",
@@ -30,7 +30,7 @@
     "bot_selection": {
         "channel": "whatsapp",
         "source": "917834811114",
-        "destination": "919964300623",
+        "destination": "917892950883",
         "message": {
             "type": "quick_reply",
             "msgid": "qr1",
@@ -61,10 +61,10 @@
         "src.name": "TestDJP"
     },
     "bot_1": {
-        "welcome": {
+        "Welcome": {
             "channel": "whatsapp",
             "source": "917834811114",
-            "destination": "919964300623",
+            "destination": "917892950883",
             "message": {
                 "type": "text",
                 "text": "You can create your own story. What kind of story do you want? For example, I can tell a story about a boy who saw the sea for the first time, or a story about a girl riding a horse"
@@ -73,10 +73,10 @@
         }
     },
     "bot_2": {
-        "welcome": {
+        "Welcome": {
             "channel": "whatsapp",
             "source": "917834811114",
-            "destination": "919964300623",
+            "destination": "917892950883",
             "message": {
                 "type": "text",
                 "text": "What kind of activity do you want? For example, I can suggest you how to teach sorting to your children in a class"
@@ -85,10 +85,10 @@
         }
     },
     "bot_3": {
-        "welcome": {
+        "Welcome": {
             "channel": "whatsapp",
             "source": "917834811114",
-            "destination": "919964300623",
+            "destination": "917892950883",
             "message": {
                 "type": "text",
                 "text": "What kind of activity do you want? For example, I can suggest you how you can engage your child to learn about colors"
@@ -99,7 +99,7 @@
     "loading_message": {
         "channel": "whatsapp",
         "source": "917834811114",
-        "destination": "919964300623",
+        "destination": "917892950883",
         "message": {
             "type": "text",
             "text": "Preparing response! Please wait!!"
@@ -109,7 +109,7 @@
     "bot_answer_text": {
         "channel": "whatsapp",
         "source": "917834811114",
-        "destination": "919964300623",
+        "destination": "917892950883",
         "message": {
             "type": "text",
             "text": " "
@@ -119,7 +119,7 @@
     "bot_answer_audio": {
         "channel": "whatsapp",
         "source": "917834811114",
-        "destination": "919964300623",
+        "destination": "917892950883",
         "message": {
             "type": "Audio",
             "url": "https://filemanager.gupshup.io/wa/b5d1cf44-dfbb-4ce7-8435-fcf76af13eaa/wa/media/4199c74c-9441-41ab-9ec5-815a23064b8b?download=false"
@@ -129,7 +129,7 @@
     "footer_message": {
         "channel": "whatsapp",
         "source": "917834811114",
-        "destination": "919964300623",
+        "destination": "917892950883",
         "message": {
             "type": "text",
             "text": "\n \n Hope you liked it! \n -If you want to go to previous menu enter “*”. \n -If you want to go to main menu enter “#”"

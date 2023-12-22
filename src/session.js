@@ -45,7 +45,7 @@ const createSession = (req, incomingMsg) => {
 const setUserLanguage = (req, msg) => {
     console.log("⭆ setUserLanguage: ", msg);
     
-    let userReplyBtnId = msg?.payload?.postbackText;
+    let userReplyBtnId = msg?.input?.context?.id;
     let selLang =  userReplyBtnId && userReplyBtnId.includes(sessionLangKey) && userReplyBtnId?.split('__')[1]
     console.log('User selected Language: ',selLang)
 
@@ -70,8 +70,9 @@ const getUserLanguage = (req, msg) => {
 } 
 
 const setUserBot = (req, msg) => {
-  console.log("⭆ setUserBot:");
-  let userReplyBtnId = msg?.payload?.postbackText;
+  console.log("⭆ setUserBot:",  msg?.input?.context?.id);
+  let userReplyBtnId = msg?.input?.context?.id;
+
   let botId =  userReplyBtnId && userReplyBtnId.includes(sessionBotKey) && userReplyBtnId?.split('__')[1]
     
   // let botId = msg?.interactive?.button_reply?.id && msg?.interactive?.button_reply?.id.includes('bot') && msg?.interactive?.button_reply?.id?.split('__')[1]
@@ -91,7 +92,7 @@ const setUserBot = (req, msg) => {
         // console.log('req session', req.session);
         console.log(`✅ User selected bot ${botId}, req session`, req.session);
       } else {
-        console.log('❌ User selection bot: ', msg?.payload?.postbackText);
+        console.log('❌ User selection bot: ', msg?.rawData?.payload?.postbackText);
         // if (id && userSelection !== id) {
         //     req.session.userSelection = id;
         //     console.log('Updated userSelection:', id);
